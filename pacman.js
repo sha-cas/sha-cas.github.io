@@ -10,7 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
         x: 1,
         y: 1,
         size: tileSize,
-        direction: 'right'
+        direction: 'right',
+        score: 0
     };
 
     const ghosts = [
@@ -84,6 +85,20 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (pacMan.direction === 'down' && map[pacMan.y + 1][pacMan.x] !== 1) {
             pacMan.y++;
         }
+
+        // Check for pellet collision
+        if (map[pacMan.y][pacMan.x] === 2) {
+            map[pacMan.y][pacMan.x] = 0;
+            pacMan.score++;
+        }
+
+        // Check for ghost collision
+        ghosts.forEach(ghost => {
+            if (pacMan.x === ghost.x && pacMan.y === ghost.y) {
+                alert('Game Over! Your score: ' + pacMan.score);
+                document.location.reload();
+            }
+        });
     }
 
     function moveGhosts() {
@@ -109,6 +124,13 @@ document.addEventListener('DOMContentLoaded', () => {
         drawPacMan();
         moveGhosts();
         drawGhosts();
+        drawScore();
+    }
+
+    function drawScore() {
+        context.fillStyle = 'white';
+        context.font = '20px Arial';
+        context.fillText('Score: ' + pacMan.score, 10, canvas.height - 10);
     }
 
     document.addEventListener('keydown', (event) => {
